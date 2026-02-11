@@ -189,7 +189,7 @@ document.body.appendChild(c);
 
 <script>
 
-/* ===== BUILT-IN SOUND ENGINE (NO FILE NEEDED) ===== */
+/* 🎵 BUILT-IN CANDY SOUND (NO FILE REQUIRED) */
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playCandySound(){
@@ -210,11 +210,12 @@ osc.start();
 osc.stop(audioCtx.currentTime+0.4);
 }
 
-/* ===== SPIN LIMIT ===== */
+/* SPIN LIMIT + ROTATION MEMORY */
 let spinCount=0;
 const MAX_SPINS=10;
+let currentRotation=0;
 
-/* NAME ENERGY LOGIC */
+/* OUTCOMES */
 const outcomes=[
 "🍬 Dance Time! 💃",
 "🍭 Jump Like a Bunny! 🐰",
@@ -246,14 +247,15 @@ if(!name){alert("Enter a name!");return;}
 
 spinCount++;
 
-/* PLAY BUILT-IN SOUND */
+/* PLAY SOUND */
 playCandySound();
 
 let energy=nameEnergy(name);
 let index=energy%6;
 
-let angle=(360*5)+(index*60);
-wheel.style.transform="rotate("+angle+"deg)";
+/* ⭐ FIXED SPIN — ALWAYS ROTATES */
+currentRotation += (360*5)+(index*60);
+wheel.style.transform="rotate("+currentRotation+"deg)";
 
 setTimeout(()=>{
 result.innerHTML=
