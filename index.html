@@ -18,10 +18,10 @@ overflow:hidden;
 color:white;
 }
 
-/* FLOATING CANDY */
+/* 🍬 FLOATING CANDY BACKGROUND */
 .candy{
 position:absolute;
-font-size:32px;
+font-size:34px;
 animation:float 8s linear infinite;
 opacity:.8;
 }
@@ -42,12 +42,11 @@ box-shadow:0 0 80px #ff4df0aa;
 }
 
 h1{
-margin-top:0;
 font-size:36px;
 color:#ffb3ff;
+margin-top:0;
 }
 
-/* INPUT */
 input{
 width:100%;
 padding:16px;
@@ -60,7 +59,6 @@ font-size:20px;
 text-align:center;
 }
 
-/* BUTTON */
 .spinBtn{
 border:none;
 padding:16px 30px;
@@ -85,10 +83,7 @@ font-size:18px;
 }
 
 /* WHEEL */
-.wheelWrap{
-position:relative;
-margin-top:20px;
-}
+.wheelWrap{ position:relative; margin-top:20px; }
 
 .pointer{
 position:absolute;
@@ -130,12 +125,18 @@ pointer-events:none;
 
 .label span{
 position:absolute;
-font-size:18px;
+font-size:16px;
 font-weight:bold;
+text-align:center;
 text-shadow:0 0 8px #ff4df0;
 }
 
-/* RESULT */
+.big{
+font-size:30px;
+display:block;
+margin-bottom:4px;
+}
+
 #result{
 margin-top:20px;
 font-size:24px;
@@ -149,8 +150,8 @@ line-height:1.4;
 <body>
 
 <script>
-/* FLOATING CANDIES */
-const candyEmoji=["🍭","🍬","🍩","🧁","🍫"];
+/* 🍬 FLOATING CANDY BACKGROUND */
+const candyEmoji=["🍬","🍭","🍩","🧁","🎈"];
 for(let i=0;i<30;i++){
 let c=document.createElement("div");
 c.className="candy";
@@ -166,50 +167,65 @@ document.body.appendChild(c);
 <h1>Neon Candy Wheel 🍭</h1>
 
 <input id="kidName" placeholder="Enter Kid Name">
-
-<button id="spinBtn" class="spinBtn" onclick="spinCandy()">Spin Candy!</button>
+<button id="spinBtn" class="spinBtn" onclick="spinCandy()">Spin Wheel!</button>
 
 <div class="wheelWrap">
 <div class="pointer">🔻</div>
 
 <div id="wheel">
 <div class="label">
-<span style="transform:rotate(30deg) translate(110px) rotate(-30deg)">🍬 Dance</span>
-<span style="transform:rotate(90deg) translate(110px) rotate(-90deg)">🍭 Jump</span>
-<span style="transform:rotate(150deg) translate(110px) rotate(-150deg)">🧁 Sing</span>
-<span style="transform:rotate(210deg) translate(110px) rotate(-210deg)">🍩 Funny</span>
-<span style="transform:rotate(270deg) translate(110px) rotate(-270deg)">🍫 Clap</span>
-<span style="transform:rotate(330deg) translate(110px) rotate(-330deg)">🎈 Spin</span>
+
+<span style="transform:rotate(30deg) translate(115px) rotate(-30deg)">
+<div class="big">💃</div>Dance
+</span>
+
+<span style="transform:rotate(90deg) translate(115px) rotate(-90deg)">
+<div class="big">🤸</div>Jump
+</span>
+
+<span style="transform:rotate(150deg) translate(115px) rotate(-150deg)">
+<div class="big">🎤</div>Sing
+</span>
+
+<span style="transform:rotate(210deg) translate(115px) rotate(-210deg)">
+<div class="big">😜</div>Funny Face
+</span>
+
+<span style="transform:rotate(270deg) translate(115px) rotate(-270deg)">
+<div class="big">👏</div>Clap
+</span>
+
+<span style="transform:rotate(330deg) translate(115px) rotate(-330deg)">
+<div class="big">🔄</div>Spin
+</span>
+
 </div>
 </div>
 </div>
 
 <div id="result"></div>
-
 <button class="secondary" onclick="location.reload()">Restart</button>
 
 </div>
 
 <script>
 
-/* AUDIO ENGINE */
+/* 🔊 AUDIO ENGINE */
 const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
 
 function playSpinSound(){
 const osc=audioCtx.createOscillator();
 const gain=audioCtx.createGain();
 osc.type="triangle";
-osc.frequency.setValueAtTime(440,audioCtx.currentTime);
-osc.frequency.exponentialRampToValueAtTime(880,audioCtx.currentTime+0.3);
+osc.frequency.value=600;
 gain.gain.setValueAtTime(0.2,audioCtx.currentTime);
-gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.4);
+gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.3);
 osc.connect(gain);
 gain.connect(audioCtx.destination);
 osc.start();
-osc.stop(audioCtx.currentTime+0.4);
+osc.stop(audioCtx.currentTime+0.3);
 }
 
-/* ⭐ NEON POINTER CLICK */
 function playNeonClick(){
 const osc=audioCtx.createOscillator();
 const gain=audioCtx.createGain();
@@ -225,33 +241,26 @@ osc.stop(audioCtx.currentTime+0.05);
 
 /* GAME LOGIC */
 let spinCount=0;
-const MAX_SPINS=10;
 let currentRotation=0;
 let clickInterval=null;
 
-const outcomes=[
-"🍬 Dance Time! 💃",
-"🍭 Jump Like a Bunny! 🐰",
-"🧁 Sing a Happy Song! 🎶",
-"🍩 Make a Funny Face 😆",
-"🍫 Clap Hands 5 Times 👏",
-"🎈 Spin Around Fast! 🌈"
+const slices=[
+"💃 Dance Time!",
+"🤸 Jump Like a Bunny!",
+"🎤 Sing a Happy Song!",
+"😜 Make a Funny Face!",
+"👏 Clap Hands 5 Times!",
+"🔄 Spin Around Fast!"
 ];
 
 function nameEnergy(name){
 name=name.toLowerCase().replace(/[^a-z]/g,'');
 let total=0;
-for(let c of name){ total+=c.charCodeAt(0)-96; }
+for(let c of name){ total+=c.charCodeAt(0)-96;}
 return total;
 }
 
 function spinCandy(){
-
-if(spinCount>=MAX_SPINS){
-result.innerHTML="⭐ 10 spins finished! Press Restart.";
-spinBtn.disabled=true;
-return;
-}
 
 let name=document.getElementById("kidName").value;
 if(!name){alert("Enter a name!");return;}
@@ -259,17 +268,17 @@ if(!name){alert("Enter a name!");return;}
 spinCount++;
 playSpinSound();
 
-/* ⭐ PERFECT POINTER ALIGNMENT */
 const sliceAngle=360/6;
-const pointerAngle=270; // TOP
+const pointerAngle=270;
 
 let energy=nameEnergy(name);
 let index=(energy+spinCount)%6;
 
-currentRotation += (360*5) + (pointerAngle - (index*sliceAngle));
+/* ⭐ PERFECT POINTER ALIGNMENT */
+currentRotation+=(360*5)+(pointerAngle-(index*sliceAngle));
 wheel.style.transform="rotate("+currentRotation+"deg)";
 
-/* CLICK SOUND WHILE SPINNING */
+/* 🔊 NEON CLICK SOUND */
 let clicks=0;
 clearInterval(clickInterval);
 clickInterval=setInterval(()=>{
@@ -278,13 +287,10 @@ clicks++;
 if(clicks>20) clearInterval(clickInterval);
 },180);
 
-/* RESULT */
 setTimeout(()=>{
-result.innerHTML=
-name+" got:<br>"+outcomes[index]+"<br>🎯 Spins left: "+(MAX_SPINS-spinCount);
+result.innerHTML=name+" got:<br>"+slices[index];
 },4000);
 }
-
 </script>
 </body>
 </html>
