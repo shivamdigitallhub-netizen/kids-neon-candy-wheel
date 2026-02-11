@@ -9,7 +9,7 @@
 body{
 margin:0;
 font-family:"Comic Sans MS",Arial;
-background:radial-gradient(circle,#200040,#000);
+background:radial-gradient(circle,#220033,#000);
 display:flex;
 justify-content:center;
 align-items:center;
@@ -18,10 +18,10 @@ overflow:hidden;
 color:white;
 }
 
-/* FLOATING CANDY */
+/* FLOATING CANDY BACKGROUND */
 .candy{
 position:absolute;
-font-size:32px;
+font-size:30px;
 animation:float 8s linear infinite;
 opacity:.8;
 }
@@ -32,7 +32,7 @@ opacity:.8;
 
 /* CARD */
 .card{
-background:#140028;
+background:#150028;
 padding:40px;
 border-radius:30px;
 width:90vw;
@@ -42,33 +42,30 @@ box-shadow:0 0 80px #ff4df0aa;
 }
 
 h1{
-margin-top:0;
-font-size:36px;
+font-size:38px;
 color:#ffb3ff;
+margin-top:0;
 }
 
-/* INPUT */
 input{
 width:100%;
 padding:16px;
-margin:12px 0;
 border-radius:16px;
 border:none;
 background:#260040;
 color:white;
 font-size:20px;
 text-align:center;
+margin:12px 0;
 }
 
-/* BUTTONS */
 button{
 border:none;
 padding:16px 30px;
 border-radius:40px;
-margin:10px;
 cursor:pointer;
-font-weight:bold;
 font-size:20px;
+font-weight:bold;
 }
 
 .spinBtn{
@@ -77,60 +74,70 @@ color:white;
 box-shadow:0 0 25px #ff4df0;
 }
 
-.secondary{
-background:#222;
-color:white;
-}
-
-/* WHEEL */
+/* WHEEL AREA */
 .wheelWrap{
 position:relative;
 margin-top:20px;
 }
 
+/* POINTER */
 .pointer{
 position:absolute;
-top:-18px;
+top:-22px;
 left:50%;
 transform:translateX(-50%);
-font-size:36px;
-z-index:5;
+font-size:38px;
+z-index:10;
+transition:.3s;
+}
+.pointer.bounce{
+transform:translateX(-50%) scale(1.3);
 }
 
+/* WHEEL */
 #wheel{
-width:320px;
-height:320px;
+width:340px;
+height:340px;
 border-radius:50%;
 margin:auto;
-background:
-conic-gradient(
+background:conic-gradient(
 #ff6bd6 0deg 60deg,
 #ffb3ff 60deg 120deg,
 #ff6bd6 120deg 180deg,
 #ffb3ff 180deg 240deg,
 #ff6bd6 240deg 300deg,
-#ffb3ff 300deg 360deg);
+#ffb3ff 300deg 360deg
+);
 box-shadow:0 0 60px #ff4df0;
 transition:transform 4s cubic-bezier(.2,.7,.3,1);
+position:relative;
 }
 
+/* LABELS */
 .label{
 position:absolute;
 width:100%;
 height:100%;
 top:0;
 left:0;
-display:flex;
-justify-content:center;
-align-items:center;
 pointer-events:none;
 }
 
 .label span{
 position:absolute;
+left:50%;
+top:50%;
+transform-origin:center -130px;
 font-size:18px;
 font-weight:bold;
-text-shadow:0 0 8px #ff4df0;
+text-shadow:0 0 10px #ff4df0;
+transition:.4s;
+}
+
+.label span.active{
+color:#fff;
+text-shadow:0 0 20px #fff,0 0 30px #ff4df0;
+transform-origin:center -130px scale(1.2);
 }
 
 #result{
@@ -138,7 +145,6 @@ margin-top:20px;
 font-size:24px;
 font-weight:bold;
 color:#ffe0ff;
-line-height:1.4;
 }
 </style>
 </head>
@@ -146,14 +152,13 @@ line-height:1.4;
 <body>
 
 <script>
-/* FLOATING CANDIES */
 const candyEmoji=["🍭","🍬","🍩","🧁","🍫"];
-for(let i=0;i<30;i++){
+for(let i=0;i<25;i++){
 let c=document.createElement("div");
 c.className="candy";
-c.innerText=candyEmoji[Math.floor(Math.random()*candyEmoji.length)];
+c.innerText=candyEmoji[Math.floor(Math.random()*5)];
 c.style.left=Math.random()*100+"vw";
-c.style.animationDuration=(5+Math.random()*4)+"s";
+c.style.animationDuration=(5+Math.random()*5)+"s";
 document.body.appendChild(c);
 }
 </script>
@@ -167,29 +172,31 @@ document.body.appendChild(c);
 <button id="spinBtn" class="spinBtn" onclick="spinCandy()">Spin Candy!</button>
 
 <div class="wheelWrap">
-<div class="pointer">🔻</div>
+
+<div id="pointer" class="pointer">🔻</div>
 
 <div id="wheel">
 <div class="label">
-<span style="transform:rotate(30deg) translate(100px)">🍬 Dance</span>
-<span style="transform:rotate(90deg) translate(100px)">🍭 Jump</span>
-<span style="transform:rotate(150deg) translate(100px)">🧁 Sing</span>
-<span style="transform:rotate(210deg) translate(100px)">🍩 Funny</span>
-<span style="transform:rotate(270deg) translate(100px)">🍫 Clap</span>
-<span style="transform:rotate(330deg) translate(100px)">🎈 Spin</span>
+<span style="transform:rotate(0deg)">🍬 Dance</span>
+<span style="transform:rotate(60deg)">🍭 Jump</span>
+<span style="transform:rotate(120deg)">🧁 Sing</span>
+<span style="transform:rotate(180deg)">🍩 Funny</span>
+<span style="transform:rotate(240deg)">🍫 Clap</span>
+<span style="transform:rotate(300deg)">🎈 Spin</span>
 </div>
 </div>
+
 </div>
 
 <div id="result"></div>
 
-<button class="secondary" onclick="location.reload()">Restart</button>
+<button onclick="location.reload()">Restart</button>
 
 </div>
 
 <script>
 
-/* BUILT-IN SOUND */
+/* SOUND */
 const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
 function playCandySound(){
 const osc=audioCtx.createOscillator();
@@ -205,10 +212,11 @@ osc.start();
 osc.stop(audioCtx.currentTime+0.4);
 }
 
-/* SPIN SYSTEM */
+/* LOGIC */
 let spinCount=0;
-const MAX_SPINS=10;
 let currentRotation=0;
+const sliceAngle=60;
+const pointerOffset=30;
 
 const outcomes=[
 "🍬 Dance Time! 💃",
@@ -222,19 +230,11 @@ const outcomes=[
 function nameEnergy(name){
 name=name.toLowerCase().replace(/[^a-z]/g,'');
 let total=0;
-for(let c of name){
-total+=c.charCodeAt(0)-96;
-}
+for(let c of name){ total+=c.charCodeAt(0)-96;}
 return total;
 }
 
 function spinCandy(){
-
-if(spinCount>=MAX_SPINS){
-result.innerHTML="⭐ 10 spins finished! Press Restart for next kid.";
-spinBtn.disabled=true;
-return;
-}
 
 let name=document.getElementById("kidName").value;
 if(!name){alert("Enter a name!");return;}
@@ -244,18 +244,33 @@ playCandySound();
 
 let energy=nameEnergy(name);
 
-/* ⭐ FIXED VARIATION LOGIC */
+/* ⭐ VARIATION LOGIC */
 let index=(energy+spinCount)%6;
 
-currentRotation+=(360*5)+(index*60);
+/* ⭐ SUPER PERFECT ALIGNMENT FIX */
+currentRotation+=(360*5)+(360-(index*sliceAngle)-pointerOffset);
 wheel.style.transform="rotate("+currentRotation+"deg)";
 
+/* REMOVE OLD GLOW */
+document.querySelectorAll(".label span").forEach(el=>el.classList.remove("active"));
+
 setTimeout(()=>{
+
+/* POINTER BOUNCE */
+pointer.classList.add("bounce");
+setTimeout(()=>pointer.classList.remove("bounce"),400);
+
+/* SLICE GLOW */
+document.querySelectorAll(".label span")[index].classList.add("active");
+
 result.innerHTML=
-name+" got:<br>"+outcomes[index]+"<br>🎯 Spins left: "+(MAX_SPINS-spinCount);
-},3500);
+name+" got:<br>"+outcomes[index];
+
+},4000);
+
 }
 
 </script>
+
 </body>
 </html>
