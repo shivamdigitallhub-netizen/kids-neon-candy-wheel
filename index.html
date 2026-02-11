@@ -9,7 +9,7 @@
 body{
 margin:0;
 font-family:"Comic Sans MS",Arial;
-background:radial-gradient(circle,#220033,#000);
+background:radial-gradient(circle,#200040,#000);
 display:flex;
 justify-content:center;
 align-items:center;
@@ -18,10 +18,10 @@ overflow:hidden;
 color:white;
 }
 
-/* FLOATING CANDY BACKGROUND */
+/* FLOATING CANDY */
 .candy{
 position:absolute;
-font-size:30px;
+font-size:32px;
 animation:float 8s linear infinite;
 opacity:.8;
 }
@@ -32,7 +32,7 @@ opacity:.8;
 
 /* CARD */
 .card{
-background:#150028;
+background:#140028;
 padding:40px;
 border-radius:30px;
 width:90vw;
@@ -42,30 +42,31 @@ box-shadow:0 0 80px #ff4df0aa;
 }
 
 h1{
-font-size:38px;
-color:#ffb3ff;
 margin-top:0;
+font-size:36px;
+color:#ffb3ff;
 }
 
 input{
 width:100%;
 padding:16px;
+margin:12px 0;
 border-radius:16px;
 border:none;
 background:#260040;
 color:white;
 font-size:20px;
 text-align:center;
-margin:12px 0;
 }
 
 button{
 border:none;
 padding:16px 30px;
 border-radius:40px;
+margin:10px;
 cursor:pointer;
-font-size:20px;
 font-weight:bold;
+font-size:20px;
 }
 
 .spinBtn{
@@ -74,70 +75,66 @@ color:white;
 box-shadow:0 0 25px #ff4df0;
 }
 
-/* WHEEL AREA */
+.secondary{
+background:#222;
+color:white;
+}
+
+/* WHEEL */
 .wheelWrap{
 position:relative;
 margin-top:20px;
 }
 
-/* POINTER */
 .pointer{
 position:absolute;
-top:-22px;
+top:-18px;
 left:50%;
 transform:translateX(-50%);
-font-size:38px;
-z-index:10;
-transition:.3s;
-}
-.pointer.bounce{
-transform:translateX(-50%) scale(1.3);
+font-size:36px;
+z-index:5;
+transition:transform .3s;
 }
 
-/* WHEEL */
 #wheel{
-width:340px;
-height:340px;
+width:320px;
+height:320px;
 border-radius:50%;
 margin:auto;
-background:conic-gradient(
+background:
+conic-gradient(
 #ff6bd6 0deg 60deg,
 #ffb3ff 60deg 120deg,
 #ff6bd6 120deg 180deg,
 #ffb3ff 180deg 240deg,
 #ff6bd6 240deg 300deg,
-#ffb3ff 300deg 360deg
-);
+#ffb3ff 300deg 360deg);
 box-shadow:0 0 60px #ff4df0;
 transition:transform 4s cubic-bezier(.2,.7,.3,1);
-position:relative;
 }
 
-/* LABELS */
 .label{
 position:absolute;
 width:100%;
 height:100%;
 top:0;
 left:0;
+display:flex;
+justify-content:center;
+align-items:center;
 pointer-events:none;
 }
 
 .label span{
 position:absolute;
-left:50%;
-top:50%;
-transform-origin:center -130px;
 font-size:18px;
 font-weight:bold;
-text-shadow:0 0 10px #ff4df0;
-transition:.4s;
+text-shadow:0 0 8px #ff4df0;
+transition:.3s;
 }
 
-.label span.active{
-color:#fff;
-text-shadow:0 0 20px #fff,0 0 30px #ff4df0;
-transform-origin:center -130px scale(1.2);
+.glow{
+filter:drop-shadow(0 0 12px #fff) drop-shadow(0 0 25px #ff4df0);
 }
 
 #result{
@@ -145,6 +142,7 @@ margin-top:20px;
 font-size:24px;
 font-weight:bold;
 color:#ffe0ff;
+line-height:1.4;
 }
 </style>
 </head>
@@ -153,12 +151,12 @@ color:#ffe0ff;
 
 <script>
 const candyEmoji=["🍭","🍬","🍩","🧁","🍫"];
-for(let i=0;i<25;i++){
+for(let i=0;i<30;i++){
 let c=document.createElement("div");
 c.className="candy";
-c.innerText=candyEmoji[Math.floor(Math.random()*5)];
+c.innerText=candyEmoji[Math.floor(Math.random()*candyEmoji.length)];
 c.style.left=Math.random()*100+"vw";
-c.style.animationDuration=(5+Math.random()*5)+"s";
+c.style.animationDuration=(5+Math.random()*4)+"s";
 document.body.appendChild(c);
 }
 </script>
@@ -172,29 +170,32 @@ document.body.appendChild(c);
 <button id="spinBtn" class="spinBtn" onclick="spinCandy()">Spin Candy!</button>
 
 <div class="wheelWrap">
-
 <div id="pointer" class="pointer">🔻</div>
 
 <div id="wheel">
 <div class="label">
-<span style="transform:rotate(0deg)">🍬 Dance</span>
-<span style="transform:rotate(60deg)">🍭 Jump</span>
-<span style="transform:rotate(120deg)">🧁 Sing</span>
-<span style="transform:rotate(180deg)">🍩 Funny</span>
-<span style="transform:rotate(240deg)">🍫 Clap</span>
-<span style="transform:rotate(300deg)">🎈 Spin</span>
+<span>🍬 Dance</span>
+<span>🍭 Jump</span>
+<span>🧁 Sing</span>
+<span>🍩 Funny</span>
+<span>🍫 Clap</span>
+<span>🎈 Spin</span>
 </div>
 </div>
-
 </div>
 
 <div id="result"></div>
 
-<button onclick="location.reload()">Restart</button>
+<button class="secondary" onclick="location.reload()">Restart</button>
 
 </div>
 
 <script>
+
+/* POSITION LABELS PERFECTLY */
+document.querySelectorAll(".label span").forEach((el,i)=>{
+el.style.transform=`rotate(${30+(i*60)}deg) translate(110px) rotate(-${30+(i*60)}deg)`;
+});
 
 /* SOUND */
 const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
@@ -212,11 +213,9 @@ osc.start();
 osc.stop(audioCtx.currentTime+0.4);
 }
 
-/* LOGIC */
 let spinCount=0;
+const MAX_SPINS=10;
 let currentRotation=0;
-const sliceAngle=60;
-const pointerOffset=30;
 
 const outcomes=[
 "🍬 Dance Time! 💃",
@@ -236,6 +235,12 @@ return total;
 
 function spinCandy(){
 
+if(spinCount>=MAX_SPINS){
+result.innerHTML="⭐ 10 spins finished! Press Restart.";
+spinBtn.disabled=true;
+return;
+}
+
 let name=document.getElementById("kidName").value;
 if(!name){alert("Enter a name!");return;}
 
@@ -243,34 +248,31 @@ spinCount++;
 playCandySound();
 
 let energy=nameEnergy(name);
-
-/* ⭐ VARIATION LOGIC */
 let index=(energy+spinCount)%6;
 
-/* ⭐ SUPER PERFECT ALIGNMENT FIX */
-currentRotation+=(360*5)+(360-(index*sliceAngle)-pointerOffset);
+/* ⭐ PERFECT POINTER ALIGNMENT */
+currentRotation += (360*5) + (360 - (index*60) - 30);
+
 wheel.style.transform="rotate("+currentRotation+"deg)";
 
-/* REMOVE OLD GLOW */
-document.querySelectorAll(".label span").forEach(el=>el.classList.remove("active"));
+/* remove glow */
+document.querySelectorAll(".label span").forEach(e=>e.classList.remove("glow"));
 
 setTimeout(()=>{
 
-/* POINTER BOUNCE */
-pointer.classList.add("bounce");
-setTimeout(()=>pointer.classList.remove("bounce"),400);
+/* pointer bounce */
+pointer.style.transform="translateX(-50%) scale(1.3)";
+setTimeout(()=>pointer.style.transform="translateX(-50%) scale(1)",300);
 
-/* SLICE GLOW */
-document.querySelectorAll(".label span")[index].classList.add("active");
+/* glow selected slice */
+document.querySelectorAll(".label span")[index].classList.add("glow");
 
 result.innerHTML=
-name+" got:<br>"+outcomes[index];
+name+" got:<br>"+outcomes[index]+"<br>🎯 Spins left: "+(MAX_SPINS-spinCount);
 
 },4000);
-
 }
 
 </script>
-
 </body>
 </html>
