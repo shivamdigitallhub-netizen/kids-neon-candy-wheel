@@ -18,7 +18,7 @@ overflow:hidden;
 color:white;
 }
 
-/* FLOATING CANDY BACKGROUND */
+/* FLOATING CANDY */
 .candy{
 position:absolute;
 font-size:32px;
@@ -189,33 +189,27 @@ document.body.appendChild(c);
 
 <script>
 
-/* 🎵 BUILT-IN CANDY SOUND (NO FILE REQUIRED) */
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
+/* BUILT-IN SOUND */
+const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
 function playCandySound(){
-const osc = audioCtx.createOscillator();
-const gain = audioCtx.createGain();
-
+const osc=audioCtx.createOscillator();
+const gain=audioCtx.createGain();
 osc.type="triangle";
 osc.frequency.setValueAtTime(440,audioCtx.currentTime);
 osc.frequency.exponentialRampToValueAtTime(880,audioCtx.currentTime+0.3);
-
 gain.gain.setValueAtTime(0.2,audioCtx.currentTime);
 gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.4);
-
 osc.connect(gain);
 gain.connect(audioCtx.destination);
-
 osc.start();
 osc.stop(audioCtx.currentTime+0.4);
 }
 
-/* SPIN LIMIT + ROTATION MEMORY */
+/* SPIN SYSTEM */
 let spinCount=0;
 const MAX_SPINS=10;
 let currentRotation=0;
 
-/* OUTCOMES */
 const outcomes=[
 "🍬 Dance Time! 💃",
 "🍭 Jump Like a Bunny! 🐰",
@@ -246,25 +240,22 @@ let name=document.getElementById("kidName").value;
 if(!name){alert("Enter a name!");return;}
 
 spinCount++;
-
-/* PLAY SOUND */
 playCandySound();
 
 let energy=nameEnergy(name);
-let index=energy%6;
 
-/* ⭐ FIXED SPIN — ALWAYS ROTATES */
-currentRotation += (360*5)+(index*60);
+/* ⭐ FIXED VARIATION LOGIC */
+let index=(energy+spinCount)%6;
+
+currentRotation+=(360*5)+(index*60);
 wheel.style.transform="rotate("+currentRotation+"deg)";
 
 setTimeout(()=>{
 result.innerHTML=
 name+" got:<br>"+outcomes[index]+"<br>🎯 Spins left: "+(MAX_SPINS-spinCount);
 },3500);
-
 }
 
 </script>
-
 </body>
 </html>
