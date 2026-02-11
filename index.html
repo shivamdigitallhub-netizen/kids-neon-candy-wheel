@@ -93,7 +93,7 @@ left:50%;
 transform:translateX(-50%);
 font-size:36px;
 z-index:5;
-transition:transform .3s;
+transition:.3s;
 }
 
 #wheel{
@@ -119,14 +119,14 @@ width:100%;
 height:100%;
 top:0;
 left:0;
-display:flex;
-justify-content:center;
-align-items:center;
 pointer-events:none;
 }
 
 .label span{
 position:absolute;
+left:50%;
+top:50%;
+transform-origin:center;
 font-size:18px;
 font-weight:bold;
 text-shadow:0 0 8px #ff4df0;
@@ -192,9 +192,11 @@ document.body.appendChild(c);
 
 <script>
 
-/* POSITION LABELS PERFECTLY */
+/* ⭐ PERFECT LABEL POSITION (HORIZONTAL TEXT) */
 document.querySelectorAll(".label span").forEach((el,i)=>{
-el.style.transform=`rotate(${30+(i*60)}deg) translate(110px) rotate(-${30+(i*60)}deg)`;
+let angle=30+(i*60);
+el.style.transform=
+`translate(-50%,-50%) rotate(${angle}deg) translate(120px) rotate(-${angle}deg)`;
 });
 
 /* SOUND */
@@ -248,14 +250,16 @@ spinCount++;
 playCandySound();
 
 let energy=nameEnergy(name);
+
+/* ⭐ RESULT INDEX */
 let index=(energy+spinCount)%6;
 
 /* ⭐ PERFECT POINTER ALIGNMENT */
-currentRotation += (360*5) + (360 - (index*60) - 30);
+currentRotation+=(360*5)+(360-(index*60)-30);
 
 wheel.style.transform="rotate("+currentRotation+"deg)";
 
-/* remove glow */
+/* remove old glow */
 document.querySelectorAll(".label span").forEach(e=>e.classList.remove("glow"));
 
 setTimeout(()=>{
@@ -272,7 +276,6 @@ name+" got:<br>"+outcomes[index]+"<br>🎯 Spins left: "+(MAX_SPINS-spinCount);
 
 },4000);
 }
-
 </script>
 </body>
 </html>
