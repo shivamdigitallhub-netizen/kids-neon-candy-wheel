@@ -30,7 +30,6 @@ opacity:.8;
 100%{transform:translateY(-10vh)}
 }
 
-/* CARD */
 .card{
 background:#140028;
 padding:40px;
@@ -150,6 +149,7 @@ line-height:1.4;
 <body>
 
 <script>
+/* FLOATING CANDIES */
 const candyEmoji=["🍭","🍬","🍩","🧁","🍫"];
 for(let i=0;i<30;i++){
 let c=document.createElement("div");
@@ -192,7 +192,7 @@ document.body.appendChild(c);
 
 <script>
 
-/* ⭐ PERFECT LABEL POSITION (HORIZONTAL TEXT) */
+/* ⭐ PERFECT LABEL ALIGNMENT (HORIZONTAL TEXT) */
 document.querySelectorAll(".label span").forEach((el,i)=>{
 let angle=30+(i*60);
 el.style.transform=
@@ -217,7 +217,6 @@ osc.stop(audioCtx.currentTime+0.4);
 
 let spinCount=0;
 const MAX_SPINS=10;
-let currentRotation=0;
 
 const outcomes=[
 "🍬 Dance Time! 💃",
@@ -251,24 +250,25 @@ playCandySound();
 
 let energy=nameEnergy(name);
 
-/* ⭐ RESULT INDEX */
+/* ⭐ FINAL PRECISION INDEX */
 let index=(energy+spinCount)%6;
 
-/* ⭐ PERFECT POINTER ALIGNMENT */
-currentRotation+=(360*5)+(360-(index*60)-30);
+/* ⭐ ABSOLUTE TARGET ROTATION (NO DRIFT EVER) */
+const sliceAngle=360/6;
+const pointerAngle=270; // top
 
-wheel.style.transform="rotate("+currentRotation+"deg)";
+let targetRotation=(360*5)+(pointerAngle-(index*sliceAngle));
+
+wheel.style.transform="rotate("+targetRotation+"deg)";
 
 /* remove old glow */
 document.querySelectorAll(".label span").forEach(e=>e.classList.remove("glow"));
 
 setTimeout(()=>{
 
-/* pointer bounce */
 pointer.style.transform="translateX(-50%) scale(1.3)";
 setTimeout(()=>pointer.style.transform="translateX(-50%) scale(1)",300);
 
-/* glow selected slice */
 document.querySelectorAll(".label span")[index].classList.add("glow");
 
 result.innerHTML=
