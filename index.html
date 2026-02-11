@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Neon Candy Wheel 🍭</title>
 
 <style>
-
-/* ===== BODY ===== */
 body{
 margin:0;
-font-family:"Comic Sans MS", Arial, sans-serif;
+font-family:"Comic Sans MS",Arial;
 background:radial-gradient(circle,#200040,#000);
 display:flex;
 justify-content:center;
@@ -20,7 +18,7 @@ overflow:hidden;
 color:white;
 }
 
-/* ===== FLOATING CANDY BACKGROUND ===== */
+/* FLOATING CANDY BACKGROUND */
 .candy{
 position:absolute;
 font-size:32px;
@@ -32,7 +30,7 @@ opacity:.8;
 100%{transform:translateY(-10vh)}
 }
 
-/* ===== BIG CARD ===== */
+/* CARD */
 .card{
 background:#140028;
 padding:40px;
@@ -49,7 +47,7 @@ font-size:36px;
 color:#ffb3ff;
 }
 
-/* ===== INPUT ===== */
+/* INPUT */
 input{
 width:100%;
 padding:16px;
@@ -62,7 +60,7 @@ font-size:20px;
 text-align:center;
 }
 
-/* ===== BUTTONS ===== */
+/* BUTTONS */
 button{
 border:none;
 padding:16px 30px;
@@ -84,7 +82,7 @@ background:#222;
 color:white;
 }
 
-/* ===== BIG WHEEL ===== */
+/* WHEEL */
 .wheelWrap{
 position:relative;
 margin-top:20px;
@@ -104,8 +102,6 @@ width:320px;
 height:320px;
 border-radius:50%;
 margin:auto;
-position:relative;
-
 background:
 conic-gradient(
 #ff6bd6 0deg 60deg,
@@ -114,12 +110,10 @@ conic-gradient(
 #ffb3ff 180deg 240deg,
 #ff6bd6 240deg 300deg,
 #ffb3ff 300deg 360deg);
-
 box-shadow:0 0 60px #ff4df0;
 transition:transform 4s cubic-bezier(.2,.7,.3,1);
 }
 
-/* ===== LABELS INSIDE WHEEL ===== */
 .label{
 position:absolute;
 width:100%;
@@ -136,11 +130,9 @@ pointer-events:none;
 position:absolute;
 font-size:18px;
 font-weight:bold;
-color:#fff;
 text-shadow:0 0 8px #ff4df0;
 }
 
-/* ===== RESULT ===== */
 #result{
 margin-top:20px;
 font-size:24px;
@@ -148,14 +140,13 @@ font-weight:bold;
 color:#ffe0ff;
 line-height:1.4;
 }
-
 </style>
 </head>
 
 <body>
 
-<!-- FLOATING CANDY -->
 <script>
+/* FLOATING CANDIES */
 const candyEmoji=["🍭","🍬","🍩","🧁","🍫"];
 for(let i=0;i<30;i++){
 let c=document.createElement("div");
@@ -173,13 +164,12 @@ document.body.appendChild(c);
 
 <input id="kidName" placeholder="Enter Kid Name">
 
-<button class="spinBtn" onclick="spinCandy()">Spin Candy!</button>
+<button id="spinBtn" class="spinBtn" onclick="spinCandy()">Spin Candy!</button>
 
 <div class="wheelWrap">
 <div class="pointer">🔻</div>
 
 <div id="wheel">
-
 <div class="label">
 <span style="transform:rotate(30deg) translate(100px)">🍬 Dance</span>
 <span style="transform:rotate(90deg) translate(100px)">🍭 Jump</span>
@@ -188,7 +178,6 @@ document.body.appendChild(c);
 <span style="transform:rotate(270deg) translate(100px)">🍫 Clap</span>
 <span style="transform:rotate(330deg) translate(100px)">🎈 Spin</span>
 </div>
-
 </div>
 </div>
 
@@ -200,8 +189,32 @@ document.body.appendChild(c);
 
 <script>
 
-/* ===== NAME ENERGY LOGIC ===== */
+/* ===== BUILT-IN SOUND ENGINE (NO FILE NEEDED) ===== */
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+function playCandySound(){
+const osc = audioCtx.createOscillator();
+const gain = audioCtx.createGain();
+
+osc.type="triangle";
+osc.frequency.setValueAtTime(440,audioCtx.currentTime);
+osc.frequency.exponentialRampToValueAtTime(880,audioCtx.currentTime+0.3);
+
+gain.gain.setValueAtTime(0.2,audioCtx.currentTime);
+gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.4);
+
+osc.connect(gain);
+gain.connect(audioCtx.destination);
+
+osc.start();
+osc.stop(audioCtx.currentTime+0.4);
+}
+
+/* ===== SPIN LIMIT ===== */
+let spinCount=0;
+const MAX_SPINS=10;
+
+/* NAME ENERGY LOGIC */
 const outcomes=[
 "🍬 Dance Time! 💃",
 "🍭 Jump Like a Bunny! 🐰",
@@ -222,21 +235,29 @@ return total;
 
 function spinCandy(){
 
+if(spinCount>=MAX_SPINS){
+result.innerHTML="⭐ 10 spins finished! Press Restart for next kid.";
+spinBtn.disabled=true;
+return;
+}
+
 let name=document.getElementById("kidName").value;
 if(!name){alert("Enter a name!");return;}
+
+spinCount++;
+
+/* PLAY BUILT-IN SOUND */
+playCandySound();
 
 let energy=nameEnergy(name);
 let index=energy%6;
 
-let wheel=document.getElementById("wheel");
-
-/* BIG SMOOTH SPIN */
 let angle=(360*5)+(index*60);
 wheel.style.transform="rotate("+angle+"deg)";
 
 setTimeout(()=>{
-document.getElementById("result").innerHTML=
-name+" got:<br>"+outcomes[index];
+result.innerHTML=
+name+" got:<br>"+outcomes[index]+"<br>🎯 Spins left: "+(MAX_SPINS-spinCount);
 },3500);
 
 }
