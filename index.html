@@ -18,10 +18,10 @@ overflow:hidden;
 color:white;
 }
 
-/* 🍬 FLOATING CANDY BACKGROUND */
+/* FLOATING CANDIES */
 .candy{
 position:absolute;
-font-size:34px;
+font-size:32px;
 animation:float 8s linear infinite;
 opacity:.8;
 }
@@ -42,9 +42,9 @@ box-shadow:0 0 80px #ff4df0aa;
 }
 
 h1{
+margin-top:0;
 font-size:36px;
 color:#ffb3ff;
-margin-top:0;
 }
 
 input{
@@ -59,7 +59,7 @@ font-size:20px;
 text-align:center;
 }
 
-.spinBtn{
+button{
 border:none;
 padding:16px 30px;
 border-radius:40px;
@@ -67,6 +67,9 @@ margin:10px;
 cursor:pointer;
 font-weight:bold;
 font-size:20px;
+}
+
+.spinBtn{
 background:linear-gradient(45deg,#ff4df0,#ff6bd6);
 color:white;
 box-shadow:0 0 25px #ff4df0;
@@ -75,15 +78,13 @@ box-shadow:0 0 25px #ff4df0;
 .secondary{
 background:#222;
 color:white;
-border:none;
-padding:14px 28px;
-border-radius:30px;
-margin-top:10px;
-font-size:18px;
 }
 
 /* WHEEL */
-.wheelWrap{ position:relative; margin-top:20px; }
+.wheelWrap{
+position:relative;
+margin-top:20px;
+}
 
 .pointer{
 position:absolute;
@@ -111,30 +112,15 @@ box-shadow:0 0 60px #ff4df0;
 transition:transform 4s cubic-bezier(.2,.7,.3,1);
 }
 
-.label{
-position:absolute;
-width:100%;
-height:100%;
-top:0;
-left:0;
-display:flex;
-justify-content:center;
-align-items:center;
-pointer-events:none;
-}
-
+/* LABELS */
 .label span{
 position:absolute;
-font-size:16px;
+left:50%;
+top:50%;
+font-size:18px;
 font-weight:bold;
-text-align:center;
 text-shadow:0 0 8px #ff4df0;
-}
-
-.big{
-font-size:30px;
-display:block;
-margin-bottom:4px;
+transform-origin:center;
 }
 
 #result{
@@ -150,8 +136,8 @@ line-height:1.4;
 <body>
 
 <script>
-/* 🍬 FLOATING CANDY BACKGROUND */
-const candyEmoji=["🍬","🍭","🍩","🧁","🎈"];
+/* FLOATING CANDY BACKGROUND */
+const candyEmoji=["🍭","🍬","🍩","🧁","🍫"];
 for(let i=0;i<30;i++){
 let c=document.createElement("div");
 c.className="candy";
@@ -167,130 +153,108 @@ document.body.appendChild(c);
 <h1>Neon Candy Wheel 🍭</h1>
 
 <input id="kidName" placeholder="Enter Kid Name">
+
 <button id="spinBtn" class="spinBtn" onclick="spinCandy()">Spin Wheel!</button>
 
 <div class="wheelWrap">
 <div class="pointer">🔻</div>
 
 <div id="wheel">
-<div class="label">
 
-<span style="transform:rotate(30deg) translate(115px) rotate(-30deg)">
-<div class="big">💃</div>Dance
-</span>
+<!-- PERFECTLY CENTERED LABELS (105px radius) -->
+<span class="label" style="transform:rotate(30deg) translate(105px) rotate(-30deg)">🎤 Sing</span>
+<span class="label" style="transform:rotate(90deg) translate(105px) rotate(-90deg)">🐰 Jump</span>
+<span class="label" style="transform:rotate(150deg) translate(105px) rotate(-150deg)">💃 Dance</span>
+<span class="label" style="transform:rotate(210deg) translate(105px) rotate(-210deg)">😆 Funny</span>
+<span class="label" style="transform:rotate(270deg) translate(105px) rotate(-270deg)">👏 Clap</span>
+<span class="label" style="transform:rotate(330deg) translate(105px) rotate(-330deg)">🌀 Spin</span>
 
-<span style="transform:rotate(90deg) translate(115px) rotate(-90deg)">
-<div class="big">🤸</div>Jump
-</span>
-
-<span style="transform:rotate(150deg) translate(115px) rotate(-150deg)">
-<div class="big">🎤</div>Sing
-</span>
-
-<span style="transform:rotate(210deg) translate(115px) rotate(-210deg)">
-<div class="big">😜</div>Funny Face
-</span>
-
-<span style="transform:rotate(270deg) translate(115px) rotate(-270deg)">
-<div class="big">👏</div>Clap
-</span>
-
-<span style="transform:rotate(330deg) translate(115px) rotate(-330deg)">
-<div class="big">🔄</div>Spin
-</span>
-
-</div>
 </div>
 </div>
 
 <div id="result"></div>
+
 <button class="secondary" onclick="location.reload()">Restart</button>
 
 </div>
 
 <script>
 
-/* 🔊 AUDIO ENGINE */
+/* BUILT-IN NEON SOUND */
 const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-
-function playSpinSound(){
+function playCandySound(){
 const osc=audioCtx.createOscillator();
 const gain=audioCtx.createGain();
 osc.type="triangle";
-osc.frequency.value=600;
+osc.frequency.setValueAtTime(440,audioCtx.currentTime);
+osc.frequency.exponentialRampToValueAtTime(880,audioCtx.currentTime+0.3);
 gain.gain.setValueAtTime(0.2,audioCtx.currentTime);
-gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.3);
+gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.4);
 osc.connect(gain);
 gain.connect(audioCtx.destination);
 osc.start();
-osc.stop(audioCtx.currentTime+0.3);
-}
-
-function playNeonClick(){
-const osc=audioCtx.createOscillator();
-const gain=audioCtx.createGain();
-osc.type="square";
-osc.frequency.value=1200;
-gain.gain.setValueAtTime(0.08,audioCtx.currentTime);
-gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.05);
-osc.connect(gain);
-gain.connect(audioCtx.destination);
-osc.start();
-osc.stop(audioCtx.currentTime+0.05);
+osc.stop(audioCtx.currentTime+0.4);
 }
 
 /* GAME LOGIC */
 let spinCount=0;
+const MAX_SPINS=10;
 let currentRotation=0;
-let clickInterval=null;
 
-const slices=[
-"💃 Dance Time!",
-"🤸 Jump Like a Bunny!",
+const outcomes=[
 "🎤 Sing a Happy Song!",
-"😜 Make a Funny Face!",
+"🐰 Jump Like a Bunny!",
+"💃 Dance Time!",
+"😆 Make a Funny Face!",
 "👏 Clap Hands 5 Times!",
-"🔄 Spin Around Fast!"
+"🌀 Spin Around Fast!"
 ];
 
 function nameEnergy(name){
 name=name.toLowerCase().replace(/[^a-z]/g,'');
 let total=0;
-for(let c of name){ total+=c.charCodeAt(0)-96;}
+for(let c of name){
+total+=c.charCodeAt(0)-96;
+}
 return total;
 }
 
 function spinCandy(){
 
+if(spinCount>=MAX_SPINS){
+result.innerHTML="⭐ 10 spins finished! Press Restart for next kid.";
+spinBtn.disabled=true;
+return;
+}
+
 let name=document.getElementById("kidName").value;
 if(!name){alert("Enter a name!");return;}
 
 spinCount++;
-playSpinSound();
-
-const sliceAngle=360/6;
-const pointerAngle=270;
+playCandySound();
 
 let energy=nameEnergy(name);
 let index=(energy+spinCount)%6;
 
-/* ⭐ PERFECT POINTER ALIGNMENT */
-currentRotation+=(360*5)+(pointerAngle-(index*sliceAngle));
+/* ⭐⭐⭐ FINAL PRECISION FIX ⭐⭐⭐ */
+/* +30 aligns POINTER with SLICE CENTER */
+currentRotation+=(360*5)+(index*60)+30;
+
 wheel.style.transform="rotate("+currentRotation+"deg)";
 
-/* 🔊 NEON CLICK SOUND */
-let clicks=0;
-clearInterval(clickInterval);
-clickInterval=setInterval(()=>{
-playNeonClick();
-clicks++;
-if(clicks>20) clearInterval(clickInterval);
-},180);
-
+/* Calculate pointer slice EXACTLY */
 setTimeout(()=>{
-result.innerHTML=name+" got:<br>"+slices[index];
+
+let normalized=currentRotation%360;
+let pointerIndex=Math.floor(((360-normalized+30)%360)/60);
+
+result.innerHTML=
+name+" got:<br>"+outcomes[pointerIndex]+
+"<br>🎯 Spins left: "+(MAX_SPINS-spinCount);
+
 },4000);
 }
+
 </script>
 </body>
 </html>
